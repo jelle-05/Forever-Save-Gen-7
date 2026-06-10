@@ -10,3 +10,9 @@ export interface PokemonCache {
   base_stats: Record<string, number> | null
   shiny_locked: boolean
 }
+
+// Lichtere vorm voor de grids (zonder base_stats) — wat de gridpagina's laden.
+export type PokemonGridData = Pick<
+  PokemonCache,
+  'id' | 'name' | 'types' | 'generation' | 'sprite_default' | 'sprite_shiny' | 'shiny_locked'
+>

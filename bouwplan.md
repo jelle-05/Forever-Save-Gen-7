@@ -304,6 +304,9 @@ Request flow (e.g. "all moves of Dialga"):
 
 ## Phase 2 — Dex tab: grid foundation & Shiny Dex
 
+> **Status (done):** reusable grid (`app/components/pokemon/`) reading only from `pokemon_cache` (no live PokeAPI); Shiny Dex at `/dex` with progress `x / 807 ✨` + %, search (name/number), filters (generation, type, status), sorting; caught (colour + ✨) vs uncaught (grayscale) vs shiny-locked (lock badge); `shinies` table + RLS (own + public-dex read); seed script `npm run seed`; an initial shiny-locked set (`app/lib/pokeapi/shinyLocked.ts`).
+> **Deferred to Phase 3:** clicking a card → shiny detail/edit/complete + showcase modal + shareable hunt card. Bulk shiny-locked accuracy lands with the legendary catalog (Phase 6).
+
 ### Reusable Pokémon grid (powers all dexes)
 - [ ] Reads from the seeded `pokemon_cache` (807) — **no** live PokeAPI calls on grid pages
 - [ ] `next/image` lazy + `image-rendering: pixelated` · virtualized/infinite scroll

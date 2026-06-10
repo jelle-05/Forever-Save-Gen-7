@@ -49,7 +49,12 @@ SUPABASE_SERVICE_ROLE_KEY=...       # server-only / SECRET — never NEXT_PUBLIC
    - paste `supabase/migrations/0001_init.sql` into the Supabase SQL editor and run it.
    - This creates `profiles` (private-by-default, module-level visibility) and `pokemon_cache`, with **RLS** enforcing privacy (own profile full access; public profiles readable by anyone; cache read-only for users, written only via the service role).
 3. **Auth flow:** register (email/password, email confirmation) → `/auth/callback` exchanges the code → **onboarding** (unique `username` + game version `US`/`UM`) → the app. The `(app)` routes are gated server-side: no session → `/login`; session but no profile → `/onboarding`. Privacy/visibility is managed on the **Profile** page; the public, read-only profile lives at `/u/[username]`.
-4. **PokeAPI cache (Phase 0):** `app/lib/pokeapi/cache.ts` does fetch-on-miss (db check → PokeAPI → normalize → store via the service role). The bulk seed of all 807 species is **not run yet**; later, a small script (`scripts/seed-pokemon.ts`) can loop `1..807` calling `fetchAndCachePokemon`. Grid/dex pages will only ever read from the cache, never call PokeAPI live.
+4. **PokeAPI cache (Phase 0):** `app/lib/pokeapi/cache.ts` does fetch-on-miss (db check → PokeAPI → normalize → store via the service role). Dex/grid pages **only read from `pokemon_cache`, never call PokeAPI live**.
+5. **Seed the Pokédex (needed for the Shiny Dex):** with `NEXT_PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` in `.env.local`, run `npm run seed`. This populates `pokemon_cache` with species #1–#807 (name, types, generation, regular + USUM-shiny sprite URLs, base stats, `shiny_locked`). Idempotent (upsert on id). Until it runs, the Shiny Dex shows a "cache is empty" notice.
+
+### Shiny Dex (Phase 2)
+
+`/dex` (Shiny tab) reads all 807 cached Pokémon + the signed-in user's `shinies` rows, then filters/sorts/searches **client-side**. Progress is `caught / 807` (distinct species with `status = 'completed'`). Caught = color sprite + ✨; uncaught = grayscale; shiny-locked = lock badge. The reusable grid lives in `app/components/pokemon/` (`PokemonGrid`, `PokemonGridCard`, `PokemonFilters`) and will power Living/Forms/Legendaries later. The shiny detail/edit/showcase flow is **Phase 3**.
 
 ## Structure
 
