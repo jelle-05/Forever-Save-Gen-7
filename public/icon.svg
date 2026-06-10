@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="114" fill="#007AFF"/>
+  <g transform="translate(256 256)">
+    <!-- Pokéball -->
+    <circle r="150" fill="#ffffff"/>
+    <path d="M -150 0 A 150 150 0 0 1 150 0 Z" fill="#ffffff"/>
+    <path d="M -150 0 a 150 150 0 0 0 300 0 Z" fill="#f2f2f7"/>
+    <rect x="-150" y="-14" width="300" height="28" fill="#1c1c1e"/>
+    <circle r="46" fill="#1c1c1e"/>
+    <circle r="30" fill="#ffffff"/>
+    <circle r="16" fill="#007AFF"/>
+  </g>
+  <!-- Sparkle -->
+  <path d="M 392 120 l 14 38 38 14 -38 14 -14 38 -14 -38 -38 -14 38 -14 z" fill="#ffd60a"/>
+</svg>

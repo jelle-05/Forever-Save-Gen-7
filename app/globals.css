@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #1c1c1e;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+
+  /* Officiële Pokémon type-kleuren — beschikbaar als utilities
+     (bv. bg-type-fire, text-type-water) voor grids/filters/badges. */
+  --color-type-normal: #a8a77a;
+  --color-type-fire: #ee8130;
+  --color-type-water: #6390f0;
+  --color-type-electric: #f7d02c;
+  --color-type-grass: #7ac74c;
+  --color-type-ice: #96d9d6;
+  --color-type-fighting: #c22e28;
+  --color-type-poison: #a33ea1;
+  --color-type-ground: #e2bf65;
+  --color-type-flying: #a98ff3;
+  --color-type-psychic: #f95587;
+  --color-type-bug: #a6b91a;
+  --color-type-rock: #b6a136;
+  --color-type-ghost: #735797;
+  --color-type-dragon: #6f35fc;
+  --color-type-dark: #705746;
+  --color-type-steel: #b7b7ce;
+  --color-type-fairy: #d685ad;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  background-color: #ffffff;
+  color-scheme: light;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, var(--font-geist-sans), 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  /* Duw content onder de statusbalk; witte achtergrond vult de safe area */
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Voeg ruimte toe onder de home indicator; bg-white van BottomBar vult die ruimte */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Bottom-sheets: content vrijhouden van de iOS home-indicator
+   (1rem basis-padding + de safe-area-inset; op desktop gewoon 1rem) */
+.modal-safe-bottom {
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+/* Zichtbare keyboard-focus op alle interactieve elementen (toetsenbord-
+   navigatie); muis/touch triggert :focus-visible niet, dus geen visuele ruis */
+:where(button, a, input, textarea, select, [role='button']):focus-visible {
+  outline: 2px solid #007aff;
+  outline-offset: 2px;
+}
+
+/* Reduced motion: transities en animaties praktisch uitschakelen */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
