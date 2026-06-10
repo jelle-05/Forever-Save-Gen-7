@@ -4,15 +4,11 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Sparkles } from 'lucide-react'
 import { navGroepen } from '@/lib/navigatie'
-
-const itemKlasse = (actief: boolean) =>
-  [
-    'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-medium transition-colors',
-    actief ? 'bg-blue-50 text-[#007AFF]' : 'text-gray-700 hover:bg-gray-100',
-  ].join(' ')
+import { menuKleur, tint } from '@/lib/kleuren'
 
 // Desktop-sidebar (verborgen op mobiel; daar neemt BottomBar de navigatie over).
-// Gegroepeerde lijst in iOS Settings-stijl, met een sectiekopje per groep.
+// Gegroepeerde lijst in iOS Settings-stijl: elk item heeft een eigen accentkleur
+// in een afgerond icoon-tegeltje (pastel-tint in rust, vol gekleurd wanneer actief).
 export default function Sidebar() {
   const pathname = usePathname()
 
@@ -34,9 +30,23 @@ export default function Sidebar() {
             {groep.items.map(({ label, href, icon: Icon }) => {
               // Exacte match: elke sub-route is een eigen item, dus géén prefix.
               const actief = pathname === href
+              const kleur = menuKleur(href)
               return (
-                <Link key={href} href={href} className={itemKlasse(actief)}>
-                  <Icon size={18} className={actief ? 'text-[#007AFF]' : 'text-gray-400'} />
+                <Link
+                  key={href}
+                  href={href}
+                  className={[
+                    'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] transition-colors',
+                    actief ? 'font-semibold text-gray-900' : 'font-medium text-gray-700 hover:bg-gray-100',
+                  ].join(' ')}
+                  style={actief ? { backgroundColor: tint(kleur, 0.14) } : undefined}
+                >
+                  <span
+                    className="flex items-center justify-center w-7 h-7 rounded-lg shrink-0"
+                    style={{ backgroundColor: actief ? kleur : tint(kleur, 0.16) }}
+                  >
+                    <Icon size={16} color={actief ? '#ffffff' : kleur} />
+                  </span>
                   <span className="truncate">{label}</span>
                 </Link>
               )

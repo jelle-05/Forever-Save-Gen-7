@@ -1,5 +1,6 @@
 import { Crown } from 'lucide-react'
 import EmptyState from '@/components/ui/EmptyState'
+import { menuKleur } from '@/lib/kleuren'
 
 export default function BattleRoyalPage() {
   return (
@@ -7,6 +8,7 @@ export default function BattleRoyalPage() {
       icon={Crown}
       title="Battle Royal"
       description="Binnenkort: rank-tracker Normal → Super → Hyper → Master, met datum per promotie."
+      color={menuKleur('/battle/royal')}
     />
   )
 }

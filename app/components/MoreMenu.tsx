@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ChevronRight, X } from 'lucide-react'
 import { meerItems, isActief } from '@/lib/navigatie'
+import { menuKleur, tint } from '@/lib/kleuren'
 import { useEscape } from '@/lib/useEscape'
 
 interface Props {
@@ -48,6 +49,7 @@ export default function MoreMenu({ open, onClose }: Props) {
           <div className="bg-gray-50 rounded-xl overflow-hidden divide-y divide-gray-200">
             {meerItems.map(({ label, href, icon: Icon }) => {
               const actief = isActief(pathname, href)
+              const kleur = menuKleur(href)
               return (
                 <Link
                   key={href}
@@ -55,7 +57,12 @@ export default function MoreMenu({ open, onClose }: Props) {
                   onClick={onClose}
                   className="flex items-center gap-3 px-4 py-3 text-[15px] font-medium text-gray-900 hover:bg-gray-100 transition-colors"
                 >
-                  <Icon size={20} className={actief ? 'text-[#007AFF]' : 'text-gray-400'} />
+                  <span
+                    className="flex items-center justify-center w-8 h-8 rounded-lg shrink-0"
+                    style={{ backgroundColor: actief ? kleur : tint(kleur, 0.16) }}
+                  >
+                    <Icon size={18} color={actief ? '#ffffff' : kleur} />
+                  </span>
                   <span className="flex-1 truncate">{label}</span>
                   <ChevronRight size={18} className="text-gray-300" />
                 </Link>

@@ -1,6 +1,7 @@
 import { Backpack } from 'lucide-react'
 import PageHeader from '@/components/ui/PageHeader'
 import EmptyState from '@/components/ui/EmptyState'
+import { menuKleur } from '@/lib/kleuren'
 
 export default function ItemsPage() {
   return (
@@ -10,6 +11,7 @@ export default function ItemsPage() {
         icon={Backpack}
         title="Items"
         description="Binnenkort: Poké Balls, TMs, Berries, Z-Crystals, Mega Stones, Apparel en Totem Stickers."
+        color={menuKleur('/items')}
       />
     </>
   )

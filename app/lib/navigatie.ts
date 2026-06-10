@@ -7,7 +7,12 @@ import {
 
 // Centrale bron van waarheid voor de navigatie. Wordt hergebruikt door de
 // desktop-Sidebar, de mobiele BottomBar en het More-sheet.
-export type IconType = React.ComponentType<{ size?: number; className?: string }>
+export type IconType = React.ComponentType<{
+  size?: number
+  className?: string
+  color?: string
+  style?: React.CSSProperties
+}>
 
 export interface NavItem {
   label: string

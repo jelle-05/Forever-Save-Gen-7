@@ -1,6 +1,7 @@
 import { Waves } from 'lucide-react'
 import PageHeader from '@/components/ui/PageHeader'
 import EmptyState from '@/components/ui/EmptyState'
+import { menuKleur } from '@/lib/kleuren'
 
 export default function ActivitiesPage() {
   return (
@@ -10,6 +11,7 @@ export default function ActivitiesPage() {
         icon={Waves}
         title="Activiteiten"
         description="Binnenkort: daily checklist, Island Scan, Mantine Surf, Poké Pelago, quests, Poké Finder en meer."
+        color={menuKleur('/activities')}
       />
     </>
   )
