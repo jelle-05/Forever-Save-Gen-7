@@ -1,10 +1,9 @@
 // Eenmalige seed van pokemon_cache (#1..#807) vanuit PokeAPI.
 // Draaien:  npm run seed       (gebruikt .env.local via Node --env-file)
 //
-// Vereist NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (service role
-// omzeilt RLS om in de gedeelde cache te schrijven). Idempotent: upsert op id.
-import { createClient } from '@supabase/supabase-js'
-
+// Schrijft via de PostgREST REST-API (gewone fetch) i.p.v. supabase-js, zodat
+// het op elke Node-versie werkt (supabase-js vereist een native WebSocket, die
+// Node < 22 niet heeft). De service-role-key omzeilt RLS. Idempotent: upsert op id.
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
@@ -13,7 +12,13 @@ if (!url || !serviceKey) {
   process.exit(1)
 }
 
-const supabase = createClient(url, serviceKey, { auth: { persistSession: false } })
+console.log(`Seeden naar ${new URL(url).host} …`)
+
+const restHeaders = {
+  apikey: serviceKey,
+  Authorization: `Bearer ${serviceKey}`,
+  'Content-Type': 'application/json',
+}
 
 // Houd in sync met app/lib/pokeapi/shinyLocked.ts.
 const SHINY_LOCKED = new Set([718, 772, 773, 789, 790, 791, 792, 800, 801, 802, 803, 804, 807])
@@ -39,6 +44,33 @@ async function haalOp(id) {
   }
 }
 
+async function opslaan(batch) {
+  // POST met "resolution=merge-duplicates" = upsert op de primary key (id).
+  const res = await fetch(`${url}/rest/v1/pokemon_cache`, {
+    method: 'POST',
+    headers: { ...restHeaders, Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify(batch),
+  })
+  if (!res.ok) {
+    const tekst = await res.text()
+    if (res.status === 401 || res.status === 403) {
+      throw new Error(
+        `Geen schrijfrechten (${res.status}). Staat de geheime service_role-key in ` +
+          `SUPABASE_SERVICE_ROLE_KEY (Supabase → Project Settings → API → service_role)? Detail: ${tekst}`,
+      )
+    }
+    throw new Error(`REST ${res.status}: ${tekst}`)
+  }
+}
+
+async function aantalRijen() {
+  const res = await fetch(`${url}/rest/v1/pokemon_cache?select=id`, {
+    method: 'HEAD',
+    headers: { ...restHeaders, Prefer: 'count=exact' },
+  })
+  return res.headers.get('content-range')?.split('/')?.[1] ?? '?'
+}
+
 async function main() {
   let batch = []
   for (let id = 1; id <= 807; id++) {
@@ -49,20 +81,17 @@ async function main() {
       continue
     }
     if (batch.length >= 50) {
-      const { error } = await supabase.from('pokemon_cache').upsert(batch)
-      if (error) throw error
+      await opslaan(batch)
       console.log(`Opgeslagen t/m #${id}`)
       batch = []
     }
   }
-  if (batch.length) {
-    const { error } = await supabase.from('pokemon_cache').upsert(batch)
-    if (error) throw error
-  }
-  console.log('Seed voltooid: 807 species.')
+  if (batch.length) await opslaan(batch)
+
+  console.log(`Seed voltooid. pokemon_cache bevat nu ${await aantalRijen()} rijen.`)
 }
 
 main().catch(e => {
-  console.error(e)
+  console.error('FOUT:', e.message)
   process.exit(1)
 })
