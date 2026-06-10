@@ -19,6 +19,14 @@ The full roadmap, features and database spec live in **[`bouwplan.md`](./bouwpla
 - Supabase (Postgres, EU region) for backend/auth/realtime
 - Path alias: `@/*` → `./app/*`
 
+## Supabase, auth & privacy
+
+- Clients in `app/lib/supabase/`: `client.ts` (`createBrowserClient`, Client Components), `server.ts` (`createServerClient` + async `cookies()`, Server Components/Actions/Route Handlers — always `getUser()`, not `getSession()`), `service.ts` (service-role, server-only, cache/seed writes), `config.ts` (`isSupabaseConfigured()`).
+- **Graceful degradation:** every place that constructs a server client / does auth gating must first check `isSupabaseConfigured()`. Without env vars the app still builds and the stub UI is browsable. Never let a missing env var break the build.
+- **Session & gating:** `middleware.ts` refreshes the session and redirects unauthenticated users away from protected routes. The `(app)/layout.tsx` (async server component) does the profile check: no session → `/login`, session but no profile → `/onboarding`.
+- **Schema & RLS** live in `supabase/migrations/*.sql` (apply via `supabase db push` or the SQL editor). RLS — not the UI — enforces privacy: profiles are private-by-default (`is_public`), readable by others only when public; `pokemon_cache` is read-only for users (service role seeds it). Add new user tables as `user_id`-scoped with matching policies.
+- **PokeAPI cache** in `app/lib/pokeapi/`: read via `getPokemon` (fetch-on-miss). Dex/grid pages read only from the cache, never call PokeAPI live.
+
 ## Code conventions (house style of `agenda` + `notes`)
 
 - **Dutch naming** for variables, props, functions and comments.
