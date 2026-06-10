@@ -274,6 +274,7 @@ Request flow (e.g. "all moves of Dialga"):
 ## Phase 1 — Accounts, profiles, privacy & app shell (iOS styling)
 
 > **Status (done this milestone):** email/password sign-up + login + password reset + email-confirmation callback; onboarding (unique username + US/UM); `profiles` (private-by-default, `module_visibility` jsonb, `feed_enabled` false by default, no email/PII) with RLS; server-side route gating + middleware; profile/privacy settings with public + per-module + feed toggles; public read-only `/u/[username]` honoring module visibility; plain-language `/privacy`; the iOS app shell from the bootstrap.
+> **Verified live on Vercel with Supabase connected (2026-06-10): registration works end-to-end.**
 > **Deferred:** avatar upload + EXIF stripping, self-hosted analytics, Open Graph cards.
 
 ### Auth & accounts

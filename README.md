@@ -2,7 +2,7 @@
 
 A free platform to track your **Pokémon Ultra Sun / Ultra Moon** "forever save" to 100% completion: shiny dex with a live hunt counter, living dex, forms, legendaries & Ultra Beasts, battle-ready Pokémon, items, battle facilities, activities and a trainer profile. Privacy-first, multi-user, with optionally shareable public profiles.
 
-> 🚧 **Status:** foundation + app shell + accounts. Navigation (desktop sidebar + mobile tab bar), all route stubs, and the Phase 0/1 backend (Supabase auth, profiles with RLS, onboarding, privacy settings, public profiles, PokeAPI cache layer) are in place; the actual tracker features follow per phase. The full roadmap and execution plan live in **[`bouwplan.md`](./bouwplan.md)**.
+> ✅ **Status:** foundation + app shell + accounts — **live on Vercel with Supabase connected** (registration/login verified). Navigation (desktop sidebar + mobile tab bar), all route stubs, and the Phase 0/1 backend (Supabase auth, profiles with RLS, onboarding, privacy settings, public profiles, PokeAPI cache layer) are in place; the actual tracker features follow per phase. The full roadmap and execution plan live in **[`bouwplan.md`](./bouwplan.md)**.
 
 ## Stack
 
@@ -80,4 +80,8 @@ bouwplan.md         # execution plan (per phase) + full roadmap/specification
 
 1. Push the repo to GitHub.
 2. Import it in Vercel — the framework is auto-detected as **Next.js**; the default build (`next build`) is sufficient.
-3. Env vars are optional as long as Supabase is not connected.
+3. Add the environment variables (see above) under **Settings → Environment Variables** for Production (and Preview if you test preview URLs).
+4. ⚠️ **`NEXT_PUBLIC_*` vars are inlined at build time.** After adding or changing them you must trigger a **fresh build** — either push a commit, or **Deployments → ⋯ → Redeploy** with *"Use existing Build Cache"* **off**. A plain redeploy reuses the old bundle and auth stays disabled. Hard-refresh (Ctrl+Shift+R) afterwards.
+5. In Supabase **Authentication → URL Configuration**, set the Site URL and add the redirect URLs for your Vercel domain (`https://<app>.vercel.app/auth/callback` and the `?next=/reset-password` variant).
+
+> Without env vars the app still builds (graceful stub mode); the auth UI shows a "Supabase is nog niet gekoppeld" notice and the buttons are disabled until a build picks up the vars.

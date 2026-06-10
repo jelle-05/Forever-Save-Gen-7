@@ -26,6 +26,7 @@ The full roadmap, features and database spec live in **[`bouwplan.md`](./bouwpla
 - **Session & gating:** `middleware.ts` refreshes the session and redirects unauthenticated users away from protected routes. The `(app)/layout.tsx` (async server component) does the profile check: no session → `/login`, session but no profile → `/onboarding`.
 - **Schema & RLS** live in `supabase/migrations/*.sql` (apply via `supabase db push` or the SQL editor). RLS — not the UI — enforces privacy: profiles are private-by-default (`is_public`), readable by others only when public; `pokemon_cache` is read-only for users (service role seeds it). Add new user tables as `user_id`-scoped with matching policies.
 - **PokeAPI cache** in `app/lib/pokeapi/`: read via `getPokemon` (fetch-on-miss). Dex/grid pages read only from the cache, never call PokeAPI live.
+- **Vercel gotcha:** `NEXT_PUBLIC_*` env vars are baked in at build time. After adding/changing them, trigger a fresh build (new commit or Redeploy without build cache) — a cached redeploy keeps auth disabled.
 
 ## Code conventions (house style of `agenda` + `notes`)
 
